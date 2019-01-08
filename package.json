@@ -1,0 +1,11 @@
+{
+  "name": "treseta_online",
+  "version": "1.0.0",
+  "description": "Online server for game Treseta",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Damir Bulich",
+  "license": "ISC"
+}
