@@ -123,14 +123,20 @@ setInterval(function(){
             for (var i=0;i<40;i++){          //igra pocinje ispocetka
                 deck.push(i);
             }
-            console.log(deck);
             for(var i=0;i<40;i++){
                 var temp=deck.pop();
                 deck.splice(Math.floor(Math.random()*39),0,temp);
             }
+            console.log(deck);
             table = [];
             playerOrder = [];
             brRundi = 8;
+            while(deck.length!=0){         //stavljamo karte u ruke svih igraca
+                for (var i in socketList){
+                    var socket=socketList[i];
+                    socket.emit('addToHand',{karta:deck.splice(0,1)})
+                }
+            }
         }
     }
     else{
