@@ -117,9 +117,7 @@ setInterval(function(){
             brRundi--;
         }
         if (brRundi==0){                                //kad su sve karte potrosene
-            for(var i=0;i<5;i++){
-                io.sockets.emit('gameOver',{id:playerList[i],score:playerList[i].points});  //posalji igracima rezultate
-            }
+            io.sockets.emit('gameOver',{id:playerList[i],score:playerList[i].points});  //posalji igracima rezultate
             for (var i=0;i<40;i++){          //igra pocinje ispocetka
                 deck.push(i);
             }
