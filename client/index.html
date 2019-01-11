@@ -95,9 +95,8 @@
         socket.on('gameOver',function(){
             hand=[];
             for (var i=0;i<8;i++){
-                images[i].removeClass('hidden');
+                images[i].classList.remove('hidden');
             }
-            images=[];
             odbaceneKarte=0;
         });
         for(var i=0;i<8;i++){
