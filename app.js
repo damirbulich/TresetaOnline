@@ -50,7 +50,9 @@ io.sockets.on('connection',function(socket){
             broj.push(socket.id);
         })
         socket.on('chosenCard',function(data){
+            io.sockets.emit('noonesmove',{});
             table.push(data.card);              //primamo kartu od igraca te stavljamo na stol
+            io.sockets.emit('putToTable',data); //saljemo svima bacenu kartu
             playerOrder.push(data.id);          //zapisivamo i id igraca
             curPlayer++;                        //slijedeci igrac moze igrati
         });   
@@ -70,11 +72,8 @@ setInterval(function(){
         io.sockets.emit("begin",{});                                 //saljemo za pocetak draw funkcije
         socketList[curPlayer%5].emit('yourMove',{id:curPlayer%5+1});       //odradivamo tko igra
         console.log('trenutni igrac: '+(curPlayer%5+1))
-        for (var i in socketList){              //saljemo svima podatke o svim kartama na stolu
-            var socket=socketList[i];
-            socket.emit('tableView',{table:table,id:playerOrder});
-        }
         if(table.length==5 && brRundi!=0){      //kada ss stol napuni a nije kraj igre
+            io.sockets.emit('krajRunde',{});
             var indexOfWinner = function(table1){   //provjeravamo koja je najveca karta
                 var maxim = 0;
                 var pos = 0;
@@ -144,8 +143,3 @@ setInterval(function(){
     }
 //}
 },2000)
-
-
-
-
-
