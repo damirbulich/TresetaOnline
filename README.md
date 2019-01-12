@@ -28,4 +28,4 @@ Da bi pokrenuli server u teminalu dođite u direktorij **TresetaOnline** i unesi
 
 node app.js
 
-__Credits: damirbulich__
+_Credits: damirbulich_
