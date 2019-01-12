@@ -164,33 +164,7 @@
         }
         images[0].addEventListener('click',function(){
             odabir=0;
-            if(!table[0]){
-                if(myMove){
-                    myMove = false;
-                    socket.emit('chosenCard',{id:id,card:hand[odabir]});
-                    hand.splice(odabir,1);
-                    document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
-                    odbaceneKarte++;
-                }
-            }else if(parseInt(table[0]/10) in parseInt(hand/10)){
-                if(parseInt(table[0]/10)==parseInt(hand[odabir]/10)){
-                    if(myMove){
-                        myMove = false;
-                        socket.emit('chosenCard',{id:id,card:hand[odabir]});
-                        hand.splice(odabir,1);
-                        document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
-                        odbaceneKarte++;
-                    }
-                }
-            }else{
-                if(myMove){
-                    myMove = false;
-                    socket.emit('chosenCard',{id:id,card:hand[odabir]});
-                    hand.splice(odabir,1);
-                    document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
-                    odbaceneKarte++;
-                }
-            }
+            odaberi(odabir);
         })
         images[1].addEventListener('click',function(){
             odabir=1;
