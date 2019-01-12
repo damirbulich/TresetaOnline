@@ -33,7 +33,7 @@ function Player(id){
     this.id=id;
     this.hand=[];
     this.grave=[];
-    this.points;
+    this.points=0;
 }
 //--------------------------------------------------------------------------
 var io = require('socket.io')(serv,{});
@@ -46,16 +46,38 @@ io.sockets.on('connection',function(socket){
         playerList.push(new Player(socket.id));
         socket.emit('identi',{id:socket.id});
         socket.on('disconnect',function(){
-            playerList.splice(socket.id,1);
+            /*playerList.splice(socket.id-1,1);
+            socketList.splice(socket.id-1,1);*/
+            socketList=[];
+            playerList=[];
             broj.push(socket.id);
         })
         socket.on('chosenCard',function(data){
-            io.sockets.emit('noonesmove',{});
+            io.sockets.emit('noonesmove',{});   //zabranjujemo svima da bacaju karte
             table.push(data.card);              //primamo kartu od igraca te stavljamo na stol
             io.sockets.emit('putToTable',data); //saljemo svima bacenu kartu
             playerOrder.push(data.id);          //zapisivamo i id igraca
             curPlayer++;                        //slijedeci igrac moze igrati
-        });   
+        });
+        socket.on('reset',function(){
+            io.sockets.emit('resetiraj',{});
+            table=[];
+            deck=[];
+            for (var i=0;i<40;i++){             //kreiramo spil od 40 karata
+                deck.push(i);
+            }
+            //console.log(deck);
+            for(var i=0;i<40;i++){
+                var temp=deck.pop();
+                deck.splice(Math.floor(Math.random()*39),0,temp);
+            }
+            while(deck.length!=0){         //stavljamo karte u ruke svih igraca
+                for (var i in socketList){
+                    var socket=socketList[i];
+                    socket.emit('addToHand',{karta:deck.splice(0,1)})
+                }
+            }
+        });
     }
     console.log('playerlist length: '+playerList.length);
 });
@@ -70,21 +92,21 @@ setInterval(function(){
             }
         }
         io.sockets.emit("begin",{});                                 //saljemo za pocetak draw funkcije
-        socketList[curPlayer%5].emit('yourMove',{id:curPlayer%5+1});       //odradivamo tko igra
-        console.log('trenutni igrac: '+(curPlayer%5+1))
+        io.sockets.emit('yourMove',{id:curPlayer%5+1});              //odradivamo tko igra
+        //console.log('trenutni igrac: '+(curPlayer%5+1))
         if(table.length==5 && brRundi!=0){      //kada ss stol napuni a nije kraj igre
             io.sockets.emit('krajRunde',{});
             var indexOfWinner = function(table1){   //provjeravamo koja je najveca karta
                 var maxim = 0;
                 var pos = 0;
-                console.log(table1);
+                //console.log(table1);
                 for(var i=0;i<table1.length;i++){       
                     if(table1[i]%10>maxim%10 && Math.floor(table1[i]/10)==Math.floor(table1[0]/10)){
                         maxim = table1[i];          //trazimo najvecu kartu
                         pos = i;                    //oznacavamo poziciju najvece karte
                     }
                 }
-                console.log(maxim);
+                //console.log(maxim);
                 return pos;                         //vracamo poziciju
             };
             pozicija = indexOfWinner(table);
@@ -92,12 +114,18 @@ setInterval(function(){
                 playerList[playerOrder[pozicija]-1].grave.push(table[i]);      //igrac koji je bacio najvecu kartu uzima sve karte sa stola
             }
             if (brRundi==1){                              
-                playerList[playerOrder[pozicija]-1].grave.push(3);
+                playerList[playerOrder[pozicija]-1].points += 3;
             }
-            console.log('player')
+            /*console.log('player')
             console.log();
             console.log('dobio je igrac: '+(playerList[playerOrder[pozicija]-1].id));
-            console.log();
+            console.log();*/
+            table = [];                                 //micemo karte sa stola
+            curPlayer = playerList[playerOrder[pozicija]-1].id-1;          //igrac koji je kupio karte zapocinje slijedecu rundu
+            playerOrder = [];                           
+            brRundi--;
+        }
+        if (brRundi==0){                                //kad su sve karte potrosene
             for (var i=0;i<playerList.length;i++){
                 var suma = 0;
                 for (var j = 0; j < playerList[i].grave.length; j++) {
@@ -108,16 +136,11 @@ setInterval(function(){
                         suma+=1;
                     }
                 }
-                playerList[i].points = suma;            //racunamo bodove skupljenih karata
+                playerList[i].points += suma;            //racunamo bodove skupljenih karata
             }
-            table = [];                                 //micemo karte sa stola
-            curPlayer = playerList[playerOrder[pozicija]-1].id-1;          //igrac koji je kupio karte zapocinje slijedecu rundu
-            playerOrder = [];                           
-            brRundi--;
-        }
-        if (brRundi==0){                                //kad su sve karte potrosene
             for(var i=0;i<5;i++){
-                io.sockets.emit('gameOver',{id:playerList[i],score:playerList[i].points});  //posalji igracima rezultate
+                io.sockets.emit('gameOver',{id:playerList[i].id,score:(playerList[i].points)});  //posalji igracima rezultate
+                console.log(playerList[i].id+' - '+playerList[i].points)
             }
             for (var i=0;i<40;i++){          //igra pocinje ispocetka
                 deck.push(i);
@@ -142,4 +165,4 @@ setInterval(function(){
         io.sockets.emit('message',{msg:'Waiting for players'});
     }
 //}
-},2000)
+},500)

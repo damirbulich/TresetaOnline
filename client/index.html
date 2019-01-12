@@ -1,4 +1,4 @@
-<!DOCTYPE <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -71,13 +71,108 @@
             top:20%;
             left:50%;
         }
+        .status{
+            position:absolute;
+            top:0%;
+            left:75%;
+            background: #888;
+            height: 100%;
+            width: 25%;
+        }
+        .player{
+            position:absolute;
+            top:2%;
+            left:10%;
+            background:#222;
+            font-size:250%;
+            padding:5%;
+            color:#fff;
+        }
+        .current{
+            position:absolute;
+            top:20%;
+            left:10%;
+            font-size:200%;
+            padding:3%;
+            background:#555;
+            color:#fff;
+        }
+        .rez1{
+            position:absolute;
+            top:38%;
+            left:10%;
+            font-size:170%;
+            padding:3%;
+            background:#555;
+            color:#fff;
+        }
+        .rez2{
+            position:absolute;
+            top:45%;
+            left:10%;
+            font-size:170%;
+            padding:3%;
+            background:#555;
+            color:#fff;
+        }
+        .rez3{
+            position:absolute;
+            top:52%;
+            left:10%;
+            font-size:170%;
+            padding:3%;
+            background:#555;
+            color:#fff;
+        }
+        .rez4{
+            position:absolute;
+            top:59%;
+            left:10%;
+            font-size:170%;
+            padding:3%;
+            background:#555;
+            color:#fff;
+        }
+        .rez5{
+            position:absolute;
+            top:66%;
+            left:10%;
+            font-size:170%;
+            padding:3%;
+            background:#555;
+            color:#fff;
+        }
+        .reset{
+            position:absolute;
+            top:90%;
+            left:10%;
+            font-size:150%;
+            padding:3%;
+            background:#700;
+            color:#fff;
+        }
+        .bg{
+            background: #365;
+        }
         .hidden{
             display:none;
         }
     </style>
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 </head>
-<body>
+<body class="bg">
+    <div class="status">
+        <div id="player-id" class="player">Igrač #</div>
+        <div id="current-player" class="current">Čekamo igrače...</div>
+        <div id="reset" class="reset">Resetiraj rundu!</div>
+        <ul class="rezltati">
+            <li class="rez1" id="score1">Igrač 1: 0</li>
+            <li class="rez2" id="score2">Igrač 2: 0</li>
+            <li class="rez3" id="score3">Igrač 3: 0</li>
+            <li class="rez4" id="score4">Igrač 4: 0</li>
+            <li class="rez5" id="score5">Igrač 5: 0</li>
+        </ul>
+    </div>
     <img id="k0" class="hand0" width="8%">
     <img id="k1" class="hand1" width="8%">
     <img id="k2" class="hand2" width="8%">
@@ -101,22 +196,30 @@
         var myMove = false;
         var odabir;
         var img;
+        var trenutniIgrac;
         var odbaceneKarte=0;
+        var rezultati=[0,0,0,0,0];
         socket.on('message',function(data){
             console.log(data);
         });
         socket.on('identi',function(data){
             id=data.id;
+            document.getElementById('player-id').innerHTML='Igrač '+id;
+            for (var i=0;i<8;i++){
+                images[i].classList.remove('hidden');
+            }
         });
         socket.on('addToHand',function(data){
             hand.push(data.karta);
-            console.log(data.karta)
+            //console.log(data.karta)
         });
         socket.on("begin",function(data){
             hand.sort(function(a,b){return Number(a)-Number(b)});
             draw();
         });
         socket.on('yourMove',function(data){
+            trenutniIgrac=data.id;
+            document.getElementById('current-player').innerHTML='Trenutni igrač: '+trenutniIgrac;
             if (data.id == id){
                 myMove = true;
             }
@@ -126,25 +229,42 @@
         });
         socket.on('putToTable', function(data){
             table.push(data.card);
-            console.log(data.karta)
+            //console.log(data.karta)
         });
         socket.on('krajRunde', function(data){
-            for (var i=0;i<5;i++){
-                imagesTable[i].classList.add('hidden');
-            }
+            setTimeout(function(){
+                for (var i=0;i<5;i++){
+                    imagesTable[i].classList.add('hidden');
+                }
+            },2000);
             table=[];
             myMove=false;
         });
-        socket.on('noonesmove', function(data){
+        /*socket.on('noonesmove', function(data){
             myMove=false;
-        });
-        socket.on('gameOver',function(){
+        });*/
+        socket.on('gameOver',function(data){
+            console.log('GameOver Data:')
+            console.log(data)
+            rezultati[data.id-1]+=parseInt(parseInt(data.score)/3);
             hand=[];
             for (var i=0;i<8;i++){
                 images[i].classList.remove('hidden');
             }
             odbaceneKarte=0;
         });
+        socket.on('resetiraj',function(){
+            hand=[];
+            for (var i=0;i<5;i++){
+                imagesTable[i].classList.add('hidden');
+            }
+            for (var i=0;i<8;i++){
+                images[i].classList.remove('hidden');
+            }
+            odbaceneKarte=0;
+            table=[];
+            myMove=false;
+        })
         for(var i=0;i<8;i++){
             images.push(document.getElementById('k'+i));
         }
@@ -160,8 +280,14 @@
                 imagesTable[i].src='./img/'+table[i][0]+'.jpg';
                 imagesTable[i].classList.remove('hidden');
             }
+            for (var i=0;i<5;i++){
+                document.getElementById('score'+(i+1)).innerHTML='Igrač '+(i+1)+': '+rezultati[i];
+            }
             requestAnimationFrame(draw);
         }
+        document.getElementById('reset').addEventListener('click',function(){
+            socket.emit('reset',{});
+        });
         images[0].addEventListener('click',function(){
             odabir=0;
             odaberi(odabir);
