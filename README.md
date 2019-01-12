@@ -27,3 +27,5 @@ pri čemu zadnji punat ultimu dobije igrač koji nosi zadnju ruku.
 Da bi pokrenuli server u teminalu dođite u direktorij **TresetaOnline** i unesite slijedeću naredbu:
 
 node app.js
+
+__Credits: damirbulich__
