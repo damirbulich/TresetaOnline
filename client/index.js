@@ -57,7 +57,7 @@ socket.on('krajRunde', function(data){
 socket.on('gameOver',function(data){
     console.log('GameOver Data:')
     console.log(data)
-    rezultati[data.id-1]+=parseInt(parseInt(data.score)/3);
+    rezultati[data.id-1]+=parseInt(data.score);
     hand=[];
     for (var i=0;i<8;i++){
         images[i].classList.remove('hidden');
@@ -92,7 +92,7 @@ function draw(){
         imagesTable[i].classList.remove('hidden');
     }
     for (var i=0;i<5;i++){
-        document.getElementById('score'+(i+1)).innerHTML='Igrač '+(i+1)+': '+rezultati[i];
+        document.getElementById('score'+(i+1)).innerHTML='Igrač '+(i+1)+':  '+parseInt(rezultati[i]/3)+' i '+rezultati[i]%3+' bele';
     }
     requestAnimationFrame(draw);
 }

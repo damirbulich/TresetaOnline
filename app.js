@@ -53,7 +53,7 @@ io.sockets.on('connection',function(socket){
             broj.push(socket.id);
         })
         socket.on('chosenCard',function(data){
-            io.sockets.emit('noonesmove',{});   //zabranjujemo svima da bacaju karte
+            //io.sockets.emit('noonesmove',{});   //zabranjujemo svima da bacaju karte
             table.push(data.card);              //primamo kartu od igraca te stavljamo na stol
             io.sockets.emit('putToTable',data); //saljemo svima bacenu kartu
             playerOrder.push(data.id);          //zapisivamo i id igraca
