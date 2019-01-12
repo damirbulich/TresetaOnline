@@ -113,6 +113,7 @@
             console.log(data.karta)
         });
         socket.on("begin",function(data){
+            hand.sort(function(a,b){return Number(a)-Number(b)});
             draw();
         });
         socket.on('yourMove',function(data){
@@ -163,84 +164,99 @@
         }
         images[0].addEventListener('click',function(){
             odabir=0;
-            if(myMove){
-                myMove = false;
-                socket.emit('chosenCard',{id:id,card:hand[odabir]});
-                hand.splice(odabir,1);
-                document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
-                odbaceneKarte++;
+            if(!table[0]){
+                if(myMove){
+                    myMove = false;
+                    socket.emit('chosenCard',{id:id,card:hand[odabir]});
+                    hand.splice(odabir,1);
+                    document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
+                    odbaceneKarte++;
+                }
+            }else if(parseInt(table[0]/10) in parseInt(hand/10)){
+                if(parseInt(table[0]/10)==parseInt(hand[odabir]/10)){
+                    if(myMove){
+                        myMove = false;
+                        socket.emit('chosenCard',{id:id,card:hand[odabir]});
+                        hand.splice(odabir,1);
+                        document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
+                        odbaceneKarte++;
+                    }
+                }
+            }else{
+                if(myMove){
+                    myMove = false;
+                    socket.emit('chosenCard',{id:id,card:hand[odabir]});
+                    hand.splice(odabir,1);
+                    document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
+                    odbaceneKarte++;
+                }
             }
         })
         images[1].addEventListener('click',function(){
             odabir=1;
-            if(myMove){
-                myMove = false;
-                socket.emit('chosenCard',{id:id,card:hand[odabir]});
-                hand.splice(odabir,1);
-                document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
-                odbaceneKarte++;
-            }
+            odaberi(odabir);
         })
         images[2].addEventListener('click',function(){
             odabir=2;
-            if(myMove){
-                myMove = false;
-                socket.emit('chosenCard',{id:id,card:hand[odabir]});
-                hand.splice(odabir,1);
-                document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
-                odbaceneKarte++;
-            }
+            odaberi(odabir);
         })
         images[3].addEventListener('click',function(){
             odabir=3;
-            if(myMove){
-                myMove = false;
-                socket.emit('chosenCard',{id:id,card:hand[odabir]});
-                hand.splice(odabir,1);
-                document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
-                odbaceneKarte++;
-            }
+            odaberi(odabir);
         })
         images[4].addEventListener('click',function(){
             odabir=4;
-            if(myMove){
-                myMove = false;
-                socket.emit('chosenCard',{id:id,card:hand[odabir]});
-                hand.splice(odabir,1);
-                document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
-                odbaceneKarte++;
-            }
+            odaberi(odabir);
         })
         images[5].addEventListener('click',function(){
             odabir=5;
-            if(myMove){
-                myMove = false;
-                socket.emit('chosenCard',{id:id,card:hand[odabir]});
-                hand.splice(odabir,1);
-                document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
-                odbaceneKarte++;
-            }
+            odaberi(odabir);
         })
         images[6].addEventListener('click',function(){
             odabir=6;
-            if(myMove){
-                myMove = false;
-                socket.emit('chosenCard',{id:id,card:hand[odabir]});
-                hand.splice(odabir,1);
-                document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
-                odbaceneKarte++;
-            }
+            odaberi(odabir);
         })
         images[7].addEventListener('click',function(){
             odabir=7;
-            if(myMove){
-                myMove = false;
-                socket.emit('chosenCard',{id:id,card:hand[odabir]});
-                hand.splice(odabir,1);
-                document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
-                odbaceneKarte++;
-            }
+            odaberi(odabir);
         })
+        function contains(karta,spil){
+            for (var i=0;i<spil.length;i++){
+                if (parseInt(karta/10)==parseInt(spil[i]/10)){
+                    return true;
+                }
+            }
+            return false;
+        }
+        function odaberi(odabirKarte){
+            if(!table[0]){
+                if(myMove){
+                    myMove = false;
+                    socket.emit('chosenCard',{id:id,card:hand[odabir]});
+                    hand.splice(odabir,1);
+                    document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
+                    odbaceneKarte++;
+                }
+            }else if(contains(table[0],hand)){
+                if(parseInt(table[0]/10)==parseInt(hand[odabir]/10)){
+                    if(myMove){
+                        myMove = false;
+                        socket.emit('chosenCard',{id:id,card:hand[odabir]});
+                        hand.splice(odabir,1);
+                        document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
+                        odbaceneKarte++;
+                    }
+                }
+            }else{
+                if(myMove){
+                    myMove = false;
+                    socket.emit('chosenCard',{id:id,card:hand[odabir]});
+                    hand.splice(odabir,1);
+                    document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
+                    odbaceneKarte++;
+                }
+            }
+        }
     </script>
 </body>
 </html>
