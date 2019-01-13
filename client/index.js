@@ -10,8 +10,12 @@ var img;
 var trenutniIgrac;
 var odbaceneKarte=0;
 var rezultati=[0,0,0,0,0];
+var brIgr=3;
+var deck=40;
 socket.on('message',function(data){
     console.log(data);
+    brIgr=data.ply;
+    deck=data.dck;
 });
 socket.on('identi',function(data){
     id=data.id;
@@ -59,24 +63,24 @@ socket.on('gameOver',function(data){
     console.log(data)
     rezultati[data.id-1]+=parseInt(data.score);
     hand=[];
-    for (var i=0;i<8;i++){
+    for (var i=0;i<hand.length;i++){
         images[i].classList.remove('hidden');
     }
     odbaceneKarte=0;
 });
 socket.on('resetiraj',function(){
     hand=[];
-    for (var i=0;i<5;i++){
+    for (var i=0;i<table.length;i++){
         imagesTable[i].classList.add('hidden');
     }
-    for (var i=0;i<8;i++){
+    for (var i=0;i<hand.length;i++){
         images[i].classList.remove('hidden');
     }
     odbaceneKarte=0;
     table=[];
     myMove=false;
 })
-for(var i=0;i<8;i++){
+for(var i=0;i<12;i++){
     images.push(document.getElementById('k'+i));
 }
 for(var i=0;i<5;i++){
@@ -85,6 +89,7 @@ for(var i=0;i<5;i++){
 }
 function draw(){
     for(var i=0;i<hand.length;i++){
+        images[i].classList.remove('hidden');
         images[i].src='./img/'+hand[i][0]+'.jpg';
     }
     for(var i=0;i<table.length;i++){
@@ -98,6 +103,15 @@ function draw(){
 }
 document.getElementById('reset').addEventListener('click',function(){
     socket.emit('reset',{});
+});
+document.getElementById('3pl').addEventListener('click',function(){
+    socket.emit('createNew',{br:3});
+});
+document.getElementById('4pl').addEventListener('click',function(){
+    socket.emit('createNew',{br:4});
+});
+document.getElementById('5pl').addEventListener('click',function(){
+    socket.emit('createNew',{br:5});
 });
 images[0].addEventListener('click',function(){
     odabir=0;
@@ -131,6 +145,22 @@ images[7].addEventListener('click',function(){
     odabir=7;
     odaberi(odabir);
 })
+images[8].addEventListener('click',function(){
+    odabir=8;
+    odaberi(odabir);
+})
+images[9].addEventListener('click',function(){
+    odabir=9;
+    odaberi(odabir);
+})
+images[10].addEventListener('click',function(){
+    odabir=10;
+    odaberi(odabir);
+})
+images[11].addEventListener('click',function(){
+    odabir=11;
+    odaberi(odabir);
+})
 function contains(karta,spil){
     for (var i=0;i<spil.length;i++){
         if (parseInt(karta/10)==parseInt(spil[i]/10)){
@@ -145,7 +175,7 @@ function odaberi(odabirKarte){
             myMove = false;
             socket.emit('chosenCard',{id:id,card:hand[odabir]});
             hand.splice(odabir,1);
-            document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
+            images[parseInt(deck/brIgr)-(odbaceneKarte+1)].classList.add('hidden');
             odbaceneKarte++;
         }
     }else if(contains(table[0],hand)){
@@ -154,7 +184,7 @@ function odaberi(odabirKarte){
                 myMove = false;
                 socket.emit('chosenCard',{id:id,card:hand[odabir]});
                 hand.splice(odabir,1);
-                document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
+                images[parseInt(deck/brIgr)-(odbaceneKarte+1)].classList.add('hidden');
                 odbaceneKarte++;
             }
         }
@@ -163,7 +193,7 @@ function odaberi(odabirKarte){
             myMove = false;
             socket.emit('chosenCard',{id:id,card:hand[odabir]});
             hand.splice(odabir,1);
-            document.getElementById('k'+(7-odbaceneKarte)).classList.add('hidden');
+            images[parseInt(deck/brIgr)-(odbaceneKarte+1)].classList.add('hidden');
             odbaceneKarte++;
         }
     }

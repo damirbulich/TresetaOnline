@@ -1,67 +1,92 @@
+.stol{
+    position: absolute;
+    top:7%;
+    left:15%;
+}
 .hand0{
     position: absolute;
     top:60%;
-    left:20%;
+    left:10%;
 }
 .hand1{
     position: absolute;
     top:60%;
-    left:25%;
+    left:15%;
 }
 .hand2{
     position: absolute;
     top:60%;
-    left:30%;
+    left:20%;
 }
 .hand3{
     position: absolute;
     top:60%;
-    left:35%;
+    left:25%;
 }
 .hand4{
     position: absolute;
     top:60%;
-    left:40%;
+    left:30%;
 }
 .hand5{
     position: absolute;
     top:60%;
-    left:45%;
+    left:35%;
 }
 .hand6{
     position: absolute;
     top:60%;
-    left:50%;
+    left:40%;
 }
 .hand7{
     position: absolute;
     top:60%;
+    left:45%;
+}
+.hand8{
+    position: absolute;
+    top:60%;
+    left:50%;
+}
+.hand9{
+    position: absolute;
+    top:60%;
     left:55%;
+}
+.hand10{
+    position: absolute;
+    top:60%;
+    left:60%;
+}
+.hand11{
+    position: absolute;
+    top:60%;
+    left:65%;
 }
 .table0{
     position: absolute;
     top:20%;
-    left:30%;
+    left:33%;
 }
 .table1{
     position: absolute;
     top:20%;
-    left:35%;
+    left:36%;
 }
 .table2{
     position: absolute;
     top:20%;
-    left:40%;
+    left:39%;
 }
 .table3{
     position: absolute;
     top:20%;
-    left:45%;
+    left:42%;
 }
 .table4{
     position: absolute;
     top:20%;
-    left:50%;
+    left:45%;
 }
 .status{
     position:absolute;
@@ -133,6 +158,21 @@
     padding:3%;
     background:#555;
     color:#fff;
+}
+.a3pl{
+    position:absolute;
+    top:76%;
+    left:10%;
+}
+.a4pl{
+    position:absolute;
+    top:76%;
+    left:30%;
+}
+.a5pl{
+    position:absolute;
+    top:76%;
+    left:50%;
 }
 .reset{
     position:absolute;
